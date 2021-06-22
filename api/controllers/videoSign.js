@@ -4,6 +4,8 @@ const fs = require('fs');
 const path = require('path');
 const signer = new DigiSigner();
 
+let valueVerify = true;
+
 const publicKey = fs.readFileSync(path.join('api/assets',
     'publicKey.pem'));
 
@@ -20,7 +22,7 @@ module.exports = {
         console.log(buffer);
         
 
-        let valueVerify = signer.verifySignature(publicKey, buffer, actualData);
+        valueVerify = signer.verifySignature(publicKey, buffer, actualData);
 
         if(valueVerify){
             signer.signData(privateKey, "jorrit");
@@ -32,4 +34,8 @@ module.exports = {
     
     },
 
+    verify_stream_data: (req, res, next) => {
+        res.status(200).json({verify: valueVerify});
+        // TODO add signing to response
+    }
 }
