@@ -25,7 +25,7 @@ module.exports = {
         valueVerify = signer.verifySignature(publicKey, buffer, actualData);
 
         if(valueVerify){
-            signer.signData(privateKey, "jorrit");
+            // signer.signData(privateKey, "jorrit");
             //Send http to angular to verify on client side
             res.status(200).json({ "verify" : "Controle van public/private key pair is geslaagd"});
         } else {
