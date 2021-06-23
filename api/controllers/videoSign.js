@@ -10,7 +10,7 @@ const publicKey = fs.readFileSync(path.join('api/assets',
     'publicKey.pem'));
 
 const privateKey = fs.readFileSync(path.join('api/assets',
-    'privateKey.pem'))
+    'privatekey.pem'))
 
 module.exports = {
 
