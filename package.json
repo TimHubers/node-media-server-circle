@@ -31,8 +31,6 @@
     "express": "^4.16.4",
     "lodash": ">=4.17.13",
     "mkdirp": "1.0.3",
-    "mongodb": "^3.6.9",
-    "socket.io": "^2.4.1",
     "ws": "^7.4.6"
   },
   "engines": {
