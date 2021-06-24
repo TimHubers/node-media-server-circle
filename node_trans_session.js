@@ -11,7 +11,35 @@ const dateFormat = require('dateformat');
 const mkdirp = require('mkdirp');
 const fs = require('fs');
 
+
+
+let mp4FileName="";
+let filePath="";
+
+const {google} = require('googleapis')
+const path = require('path')
+
+const CLIENT_ID = '698966640271-tiusf4g0ri9dgpg6mpt12onpkc68edu4.apps.googleusercontent.com'
+const CLIENT_SECRET = '3VbJ7FYHY5uzHH69V7u1-OgJ'
+const REDIRECT_URI = 'https://developers.google.com/oauthplayground'
+
+const REFRESH_TOKEN = '1//04ayp8cslm5XpCgYIARAAGAQSNwF-L9IrY3gScDwYbRL7nMDPvXSheRa08EGvUodjpwPRHog258zfjcnISYJd0RcxxNcwT8dnJjs'
+
+const oauth2Client = new google.auth.OAuth2(
+    CLIENT_ID,
+    CLIENT_SECRET,
+    REDIRECT_URI
+)
+
+oauth2Client.setCredentials({refresh_token: REFRESH_TOKEN})
+
+const drive = google.drive({
+    version: 'v3',
+    auth: oauth2Client
+})
+
 class NodeTransSession extends EventEmitter {
+  
   constructor(conf) {
     super();
     this.conf = conf;
@@ -35,7 +63,7 @@ class NodeTransSession extends EventEmitter {
     }
     if (this.conf.mp4) {
       this.conf.mp4Flags = this.conf.mp4Flags ? this.conf.mp4Flags : '';
-      let mp4FileName = dateFormat('yyyy-mm-dd-HH-MM-ss') + '.mp4';
+      mp4FileName = dateFormat('yyyy-mm-dd-HH-MM-ss') + '.mp4';
       let mapMp4 = `${this.conf.mp4Flags}${ouPath}/${mp4FileName}|`;
       mapStr += mapMp4;
       Logger.log('[Transmuxing MP4] ' + this.conf.streamPath + ' to ' + ouPath + '/' + mp4FileName);
@@ -88,6 +116,8 @@ class NodeTransSession extends EventEmitter {
               || filename.endsWith('.tmp')) {
               fs.unlinkSync(ouPath + '/' + filename);
             }
+            filePath = path.join(ouPath, mp4FileName)
+            uploadFile()
           })
         }
       });
@@ -96,6 +126,25 @@ class NodeTransSession extends EventEmitter {
 
   end() {
     this.ffmpeg_exec.kill();
+  }
+
+  
+}
+async function uploadFile(){
+  try {
+      const response = await drive.files.create({
+          requestBody: {
+              name: mp4FileName+'.mp4',
+              mimeType: 'video/mp4'
+          },
+          media:{
+              mimeType: 'video/mp4',
+              body: fs.createReadStream(filePath)
+          }
+      })
+      console.log(response.data)
+  } catch (error) {
+      console.log(error.message)
   }
 }
 

@@ -24,11 +24,14 @@
   },
   "homepage": "https://github.com/illuspas/Node-Media-Server#readme",
   "dependencies": {
+    "@ffmpeg-installer/ffmpeg": "^1.0.20",
     "basic-auth-connect": "^1.0.0",
     "body-parser": "^1.19.0",
     "chalk": "^2.4.2",
     "dateformat": "^3.0.3",
     "express": "^4.16.4",
+    "googleapis": "^76.0.0",
+    "ip": "^1.1.5",
     "lodash": ">=4.17.13",
     "mkdirp": "1.0.3",
     "ws": "^7.4.6"

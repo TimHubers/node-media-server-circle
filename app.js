@@ -15,6 +15,16 @@ const config = {
     }
 	*/
   },
+  trans: {
+    ffmpeg: '/usr/local/bin/ffmpeg',
+    tasks: [
+      {
+        app: 'live',
+        mp4: true,
+        mp4Flags: '[movflags=frag_keyframe+empty_moov]',
+      }
+    ]
+  },
   http: {
     port: 8000,
     mediaroot: './media',
