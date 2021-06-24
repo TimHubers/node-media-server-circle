@@ -20,7 +20,6 @@ module.exports = {
         let jsonSignature = JSON.parse(req.body.signature)
         const buffer = Buffer.from(jsonSignature);
         console.log(buffer);
-        
 
         valueVerify = signer.verifySignature(publicKey, buffer, actualData);
 
