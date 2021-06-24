@@ -6,6 +6,9 @@
 const _ = require('lodash');
 
 function getStreams(req, res, next) {
+  Logger.info("Streams requested.");
+  Logger.trace("Request: " + req);
+
   let stats = {};
 
   this.sessions.forEach(function (session, id) {
@@ -34,6 +37,9 @@ function getStreams(req, res, next) {
 }
 
 function pullStream(req, res, next) {
+  Logger.info("Pulling stream.");
+  Logger.trace("Request: " + req);
+
   let url = req.body.url;
   let app = req.body.app;
   let name = req.body.name;
@@ -45,7 +51,11 @@ function pullStream(req, res, next) {
   }
 }
 
+
 function pushStream(req, res, next) {
+  Logger.info("Pushing stream.");
+  Logger.trace("Request: " + req);
+
   let url = req.body.url;
   let app = req.body.app;
   let name = req.body.name;

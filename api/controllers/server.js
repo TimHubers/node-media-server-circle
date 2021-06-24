@@ -6,7 +6,23 @@
 
 const OS = require('os');
 const Package = require("../../package.json");
+const LogHandler = require('../Lib/Logger/LogHandler');
+const FileLogStore = require('../Lib/Logger/FileLogStore');
+const FileLogger = require('js-Logger');
+
+const logStore = new FileLogStore('logging.log');
+const handler = new LogHandler(logStore);
+
+FileLogger.setLevel(Logger.INFO);
+FileLogger.setHandler((messages, context) => {
+    handler.handle(messages, context);
+});
+
+global.Logger = FileLogger;
+
 function cpuAverage() {
+
+  Logger.info("CPU average requested.");
 
   //Initialise sum of idle and time of cores and fetch CPU info
   let totalIdle = 0, totalTick = 0;
@@ -27,11 +43,16 @@ function cpuAverage() {
     totalIdle += cpu.times.idle;
   }
 
+  Logger.trace("Idle: " + totalIdle / cpus.length);
+  Logger.trace("Total: " + totalTick / cpus.length);
+
   //Return the average Idle and Tick times
   return { idle: totalIdle / cpus.length, total: totalTick / cpus.length };
 }
 
 function percentageCPU() {
+  Logger.info("CPU usage percentage requested.");
+
   return new Promise(function (resolve, reject) {
     let startMeasure = cpuAverage();
     setTimeout(() => {
@@ -42,12 +63,17 @@ function percentageCPU() {
 
       //Calculate the average percentage CPU usage
       let percentageCPU = 100 - ~~(100 * idleDifference / totalDifference);
+
+      Logger.trace("CPU usage Percentage: " + percentageCPU);
+
       resolve(percentageCPU);
     }, 100);
   });
 }
 
 function getSessionsInfo(sessions) {
+  Logger.info("Session info requested.");
+
   let info = {
     inbytes: 0,
     outbytes: 0,
@@ -66,11 +92,15 @@ function getSessionsInfo(sessions) {
     info.ws += session.TAG === 'websocket-flv' ? 1 : 0;
   }
 
+  Logger.trace("Session: " + info);
+
   return info;
 }
 
 
 function getInfo(req, res, next) {
+  Logger.info("Info requested.");
+
   let s = this.sessions;
   percentageCPU().then((cpuload) => {
     let sinfo = getSessionsInfo(s);
@@ -109,6 +139,8 @@ function getInfo(req, res, next) {
       },
       version: Package.version
     };
+    Logger.trace("Info: " + info);
+
     res.json(info);
   });
 }

@@ -27,6 +27,9 @@ function postStreamTrans(req, res, next) {
 }
 
 function getStreams(req, res, next) {
+  Logger.info("Streams requested.");
+  Logger.trace("Request: " + req);
+  
   let stats = {};
 
   this.sessions.forEach(function(session, id) {
@@ -107,10 +110,14 @@ function getStreams(req, res, next) {
       }
     }
   });
+  Logger.trace("Stats: " + stats);
   res.json(stats);
 }
 
 function getStream(req, res, next) {
+  Logger.info("Stream requested.");
+  Logger.trace("Request: " + req);
+
   let streamStats = {
     isLive: false,
     viewers: 0,
@@ -141,10 +148,15 @@ function getStream(req, res, next) {
     ? publisherSession.connectTime
     : null;
 
+    Logger.trace("Stream stats: " + streamStats);
+
   res.json(streamStats);
 }
 
 function delStream(req, res, next) {
+  Logger.info("Stream deletion requested.");
+  Logger.trace("Request: " + req);
+  
   let publishStreamPath = `/${req.params.app}/${req.params.stream}`;
   let publisherSession = this.sessions.get(
     this.publishers.get(publishStreamPath)
